@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prepaid Order on WhatsApp</title>
+  <script>
+    function cleanNumber(number) {
+      return number.replace(/\D/g, '').replace(/^91/, '').replace(/^0/, '').slice(-10);
+    }
+
+    function buildMessage() {
+      const get = id => document.getElementById(id).value.trim();
+
+      const msg = `🟢 *Prepaid Order on WhatsApp*\n\n` +
+        `Name: ${get('name')}\n` +
+        `Mobile: ${get('mobile')}\n` +
+        `Alt Mobile: ${get('altMobile')}\n` +
+        `Email: ${get('email')}\n` +
+        `Address: ${get('address')}\n` +
+        `Landmark: ${get('landmark')}\n` +
+        `Pincode: ${get('pincode')}\n` +
+        `State: ${get('state')}\n` +
+        `District/City: ${get('district')}\n` +
+        `Post office: ${get('postoffice')}\n\n` +
+        `Product: ${get('product')}\n` +
+        `Variant: ${get('variant')}\n` +
+        `Base Price: ₹${get('basePrice')}\n` +
+        `Discount Applied: ₹${get('discount')}\n` +
+        `Amount Paid: ₹${get('amountPaid')}`;
+
+      document.getElementById('output').value = msg;
+      return msg;
+    }
+
+    function sendWhatsApp() {
+      const mobile = cleanNumber(document.getElementById('mobile').value);
+      const message = encodeURIComponent(buildMessage());
+      const url = `https://wa.me/91${mobile}?text=${message}`;
+      window.open(url, '_blank');
+    }
+
+    function copyMessage() {
+      const output = document.getElementById('output');
+      output.select();
+      output.setSelectionRange(0, 99999); // For mobile
+      document.execCommand("copy");
+      alert("Message copied to clipboard!");
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+  <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow">
+    <h1 class="text-2xl font-bold mb-4 text-green-600">🟢 Prepaid Order on WhatsApp</h1>
+    <div class="grid grid-cols-1 gap-4">
+      <input id="name" placeholder="Name" class="input" />
+      <input id="mobile" placeholder="Mobile (for WhatsApp)" class="input" />
+      <input id="altMobile" placeholder="Alt Mobile" class="input" />
+      <input id="email" placeholder="Email" class="input" />
+      <input id="address" placeholder="Address" class="input" />
+      <input id="landmark" placeholder="Landmark" class="input" />
+      <input id="pincode" placeholder="Pincode" class="input" />
+      <input id="state" placeholder="State" class="input" />
+      <input id="district" placeholder="District/City" class="input" />
+      <input id="postoffice" placeholder="Post office" class="input" />
+      <input id="product" placeholder="Product" class="input" />
+      <input id="variant" placeholder="Variant" class="input" />
+      <input id="basePrice" placeholder="Base Price ₹" class="input" />
+      <input id="discount" placeholder="Discount Applied ₹" class="input" />
+      <input id="amountPaid" placeholder="Amount Paid ₹" class="input" />
+    </div>
+
+    <div class="mt-6 flex flex-col gap-2">
+      <button onclick="buildMessage()" class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">
+        Generate Message
+      </button>
+      <textarea id="output" rows="6" readonly class="w-full p-2 border rounded-lg text-sm bg-gray-50"></textarea>
+      <button onclick="copyMessage()" class="w-full bg-gray-700 text-white py-2 rounded-lg font-semibold hover:bg-black">
+        📋 Copy Message
+      </button>
+      <button onclick="sendWhatsApp()" class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">
+        📲 Send on WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <style>
+    .input {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      width: 100%;
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prepaid Order Parser</title>
+  <script>
+    function cleanNumber(number) {
+      return number.replace(/\D/g, '').replace(/^91/, '').replace(/^0/, '').slice(-10);
+    }
+
+    function extractValue(label, lines) {
+      const line = lines.find(l => l.toLowerCase().startsWith(label.toLowerCase()));
+      return line ? line.split(":")[1].trim() : "";
+    }
+
+    function pad(label, value) {
+      const spaces = "               ";
+      return label + ":" + spaces.slice(label.length) + value;
+    }
+
+    function buildFromRaw() {
+      const lines = document.getElementById('raw').value.trim().split(/\n+/);
+
+      const msg =
+`🟢 *Prepaid Order on WhatsApp*
+
+${pad("Name", extractValue("Name", lines))}
+${pad("Mobile", cleanNumber(extractValue("Mobile", lines)))}
+${pad("Alt Mobile", extractValue("Alt Mobile", lines))}
+${pad("Email", extractValue("Email", lines))}
+${pad("Address", extractValue("Address", lines))}
+${pad("Landmark", extractValue("Landmark", lines))}
+${pad("Pincode", extractValue("Pincode", lines))}
+${pad("State", extractValue("State", lines))}
+${pad("District/City", extractValue("City", lines))}
+${pad("Post office", extractValue("Post office", lines))}
+
+${pad("Product", extractValue("Product name", lines))}
+${pad("Variant", extractValue("Variant", lines))}
+${pad("Base Price", "₹" + extractValue("Base Price", lines))}
+${pad("Discount", "₹" + extractValue("Discount", lines))}
+${pad("Amount Paid", "₹" + extractValue("Amount Paid", lines))}`;
+
+      document.getElementById('output').value = msg;
+    }
+
+    function copyMessage() {
+      const output = document.getElementById('output');
+      output.select();
+      output.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("Message copied to clipboard!");
+    }
+
+    function sendWhatsApp() {
+      const lines = document.getElementById('raw').value.trim().split(/\n+/);
+      const mobile = cleanNumber(extractValue("Mobile", lines));
+      const message = encodeURIComponent(document.getElementById('output').value);
+      const url = `https://wa.me/91${mobile}?text=${message}`;
+      window.open(url, '_blank');
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow">
+    <h1 class="text-2xl font-bold mb-4 text-green-600">🟢 Prepaid Order Parser</h1>
+    <textarea id="raw" rows="10" class="w-full p-3 border rounded-lg text-sm bg-gray-50" placeholder="Paste customer details here..."></textarea>
+
+    <div class="mt-4 flex flex-col gap-2">
+      <button onclick="buildFromRaw()" class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">
+        🔄 Format Message
+      </button>
+      <textarea id="output" rows="12" readonly class="w-full p-2 border rounded-lg text-sm bg-gray-50"></textarea>
+      <button onclick="copyMessage()" class="w-full bg-gray-700 text-white py-2 rounded-lg font-semibold hover:bg-black">
+        📋 Copy Message
+      </button>
+      <button onclick="sendWhatsApp()" class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">
+        📲 Send on WhatsApp
+      </button>
+    </div>
+  </div>
+</body>
+</html>
