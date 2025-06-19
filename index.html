@@ -37,9 +37,9 @@ ${pad("Post office", extractValue("Post office", lines))}
 
 ${pad("Product", extractValue("Product name", lines))}
 ${pad("Variant", extractValue("Variant", lines))}
-${pad("Base Price", "₹" + extractValue("Base Price", lines))}
-${pad("Discount", "₹" + extractValue("Discount", lines))}
-${pad("Amount Paid", "₹" + extractValue("Amount Paid", lines))}`;
+${pad("Base Price", extractValue("Base Price", lines))}
+${pad("Discount", extractValue("Discount", lines))}
+${pad("Amount Paid", extractValue("Amount Paid", lines))}`;
 
       document.getElementById('output').value = msg;
     }
